@@ -1,12 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import WPAPI from 'wpapi';
 import Content from '../components/layouts/Content';
-import { Row, Col, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import FormikControl from './formik/FormikControl';
 import * as Yup from 'yup';
-import _ from 'lodash';
 import parse from 'html-react-parser';
 import { PostsContext } from '../contexts/PostsContext';
 
@@ -20,8 +19,9 @@ function EditForm({ singlePost, postId }) {
     password: 'hUoV 8WCW Dllz 4rP4 BlEo Ip27',
   });
 
-  const editPost = (post) => {
-    wp.posts()
+  const editPost = async (post) => {
+    await wp
+      .posts()
       .id(post.id)
       .update({
         // Update the title
@@ -36,13 +36,14 @@ function EditForm({ singlePost, postId }) {
   };
 
   // HTML PARSED TITLE & CONTENT
-  // const htmlTitle = parse(singlePost.title);
-  // FOLLOWING DIDN'T WORK - NEED RESEARCH
+  const htmlTitle = parse(singlePost.title.rendered);
+  // FOLLOWING DIDN'T WORK - NEED RESEARCH - NOT POSSIBLE
   // const htmlContent = parse(singlePost.content.rendered);
+  // console.log(htmlContent);
   //   FORMIK INFO
   const initialValues = {
     id: postId,
-    title: singlePost.title.rendered,
+    title: htmlTitle,
     content: singlePost.content.rendered,
   };
   const onSubmit = (values, { resetForm }) => {
@@ -66,7 +67,6 @@ function EditForm({ singlePost, postId }) {
     dispatch({
       type: 'EDIT_POST',
       payload: { ...alteredSinglePost },
-      // payload: { ...singlePost, ...editedSinglePost },
     });
     history.push('/');
   };
@@ -90,7 +90,7 @@ function EditForm({ singlePost, postId }) {
         {singlePost &&
           ((formik) => (
             <Form className='p-3 bg-light formik-comp'>
-              {/* BOOK TITLE */}
+              {/* POST TITLE */}
               <div className='mb-2'>
                 <FormikControl
                   control='input'

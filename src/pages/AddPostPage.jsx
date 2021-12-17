@@ -2,7 +2,7 @@ import React from 'react';
 import Page from '../components/layouts/Page';
 import { Row, Col } from 'react-bootstrap';
 import Content from '../components/layouts/Content';
-import PostForm from '../components/PostForm';
+import AddForm from '../components/AddForm';
 import { Link } from 'react-router-dom';
 
 function AddPostPage() {
@@ -12,7 +12,7 @@ function AddPostPage() {
         <Col sm={12}>
           <Content width='w-100' cssClassNames='bg-light'>
             <h1>Add Post</h1>
-            <PostForm />
+            <AddForm />
           </Content>
         </Col>
       </Row>

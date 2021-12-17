@@ -1,50 +1,68 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { Formik, Form } from 'formik';
 import FormikControl from './formik/FormikControl';
 import * as Yup from 'yup';
-import { v4 as uuid } from 'uuid';
+import WPAPI from 'wpapi';
 import { PostsContext } from '../contexts/PostsContext';
 
-function PostForm() {
-  const { state, dispatch } = useContext(PostsContext);
+function AddForm() {
+  const { dispatch } = useContext(PostsContext);
   const history = useHistory();
-  const url = 'http://blockbuster.dns.army:8001/posts';
 
-  const postData = async (post) => {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(post),
-    });
-    const json = await res.json();
+  const wp = new WPAPI({
+    endpoint: 'https://digitalsupportstaff.com/wp-json',
+    username: 'cgteam',
+    password: 'hUoV 8WCW Dllz 4rP4 BlEo Ip27',
+  });
+
+  const createPost = async (post) => {
+    await wp
+      .posts()
+      .create({
+        // "title" and "content" are the only required properties
+        title: post.title,
+        content: post.content,
+        // Post will be created as a draft by default if a specific "status"
+        // is not specified
+        status: 'publish',
+      })
+      .then((response) => {
+        // "response" will hold all properties of your newly-created post,
+        // including the unique `id` the post was assigned on creation
+        console.log(response.id);
+        // DATA ALTERED FOR LOCAL INSTANT FEEDBACK
+        const createdSinglePost = {
+          id: response.id,
+          title: {
+            rendered: response.title.rendered,
+          },
+          content: {
+            rendered: response.content.rendered,
+          },
+        };
+        dispatch({ type: 'ADD_POST', payload: createdSinglePost });
+        history.push('/');
+      });
   };
 
   //   FORMIK INFO
   const initialValues = {
-    userId: 1,
-    id: uuid(),
     title: '',
-    body: '',
+    content: '',
   };
   const onSubmit = (values, { resetForm }) => {
     console.log(values);
     resetForm({ values: initialValues });
 
     const singlePost = {
-      userId: 1,
       ...values,
     };
-    postData(singlePost);
-    dispatch({ type: 'ADD_POST', payload: singlePost });
-    history.push('/');
+    createPost(singlePost);
   };
   const validationSchema = Yup.object({
     title: Yup.string().required('Title is Required!'),
-    body: Yup.string().required('Content is Required!'),
+    content: Yup.string().required('Content is Required!'),
   });
 
   return (
@@ -75,12 +93,12 @@ function PostForm() {
           <div className='mb-3'>
             <FormikControl
               control='textarea'
-              name='body'
+              name='content'
               label='Post Content'
               placeholder='Content'
               rows={4}
               className={
-                formik.touched.body && formik.errors.body
+                formik.touched.content && formik.errors.content
                   ? 'form-control is-invalid'
                   : 'form-control'
               }
@@ -99,6 +117,6 @@ function PostForm() {
   );
 }
 
-PostForm.propTypes = {};
+AddForm.propTypes = {};
 
-export default PostForm;
+export default AddForm;

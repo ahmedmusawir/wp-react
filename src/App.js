@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import PostsContextProvider from './contexts/PostsContext';
 import SinglePostPage from './pages/SinglePostPage';
 import EditPostPage from './pages/EditPostPage';
+import AddPostPage from './pages/AddPostPage';
 
 function App(props) {
   return (
@@ -17,6 +18,9 @@ function App(props) {
           <Switch>
             <Route exact path='/'>
               <HomePage />
+            </Route>
+            <Route exact path='/add-post'>
+              <AddPostPage />
             </Route>
             <Route exact path='/post/:id'>
               <SinglePostPage />

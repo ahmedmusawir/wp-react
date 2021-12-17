@@ -15,8 +15,9 @@ function BlogIndex() {
     password: 'hUoV 8WCW Dllz 4rP4 BlEo Ip27',
   });
 
-  const deletePost = (id) => {
-    wp.posts()
+  const deletePost = async (id) => {
+    await wp
+      .posts()
       .id(id)
       .delete()
       .then((res) => {
@@ -35,7 +36,6 @@ function BlogIndex() {
           <React.Fragment key={post.id}>
             <Row className='mb-2'>
               <Col sm={10}>
-                {/* <Link to={`/post/${post.id}`}> */}
                 <Link to={`/post/${post.id}`}>
                   <ListGroup.Item action>
                     {/* <div
@@ -43,7 +43,7 @@ function BlogIndex() {
                         __html: post.content.rendered,
                       }}
                     /> */}
-                    {post.title.rendered}
+                    {parse(post.title.rendered)}
                     <span className='badge rounded-pill badge-primary p-2 ml-5'>
                       ID: {post.id}
                     </span>
