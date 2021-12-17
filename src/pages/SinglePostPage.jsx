@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Content from '../components/layouts/Content';
 import { useParams } from 'react-router-dom';
 import { PostsContext } from '../contexts/PostsContext';
+import parse from 'html-react-parser';
 import _ from 'lodash';
 
 function SinglePostPage() {
@@ -12,7 +13,7 @@ function SinglePostPage() {
   const { state } = useContext(PostsContext);
 
   let singlePost;
-  singlePost = _.find(state.posts, (post) => post.id === id);
+  singlePost = _.find(state.posts, (post) => post.id === Number(id));
 
   return (
     <Page wide={true} pageTitle='Movie Form'>
@@ -25,9 +26,9 @@ function SinglePostPage() {
         <Col sm={12}>
           {singlePost && (
             <Content width='w-100' cssClassNames='bg-light'>
-              <h1>{singlePost.title}</h1>
+              <h1>{parse(singlePost.title.rendered)}</h1>
               <h4>Post ID: {id}</h4>
-              <p>{singlePost.body}</p>
+              {parse(singlePost.content.rendered)}
             </Content>
           )}
         </Col>

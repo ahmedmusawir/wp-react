@@ -22,7 +22,7 @@ function PostsContextProvider(props) {
       try {
         // Fetch posts
         const fetchedPosts = await wp.posts().get();
-        console.log(fetchedPosts);
+        // console.log(fetchedPosts);
         dispatch({
           type: 'FETCH_SUCCESS',
           payload: {

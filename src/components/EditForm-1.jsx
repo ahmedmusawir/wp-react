@@ -7,10 +7,12 @@ import { Formik, Form } from 'formik';
 import FormikControl from './formik/FormikControl';
 import * as Yup from 'yup';
 import _ from 'lodash';
+import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { PostsContext } from '../contexts/PostsContext';
 
-function EditForm({ singlePost, postId }) {
+function EditForm() {
+  const { id } = useParams();
   const { state, dispatch } = useContext(PostsContext);
   const history = useHistory();
 
@@ -20,55 +22,47 @@ function EditForm({ singlePost, postId }) {
     password: 'hUoV 8WCW Dllz 4rP4 BlEo Ip27',
   });
 
-  const editPost = (post) => {
-    wp.posts()
-      .id(post.id)
-      .update({
-        // Update the title
-        title: post.title,
-        content: post.content,
-        // Set the post live (assuming it was "draft" before)
-        status: 'publish',
-      })
-      .then(function (response) {
-        console.log('RESPONSE FROM WP:', response);
-      });
-  };
+  // const editPost = async (post) => {
+  //   await wp
+  //     .posts()
+  //     .id(2501)
+  //     .update({
+  //       // Update the title
+  //       title: post.title.rendered,
+  //       content: post.content.rendered,
+  //       // Set the post live (assuming it was "draft" before)
+  //       status: 'publish',
+  //     })
+  //     .then(function (response) {
+  //       console.log(response);
+  //     });
+  // };
+  console.log('SINGLE EDIT PAGE', state.posts);
+
+  let singlePost;
+  singlePost = _.find(state.posts, (post) => post.id === Number(id));
+  console.log('single Post', singlePost);
 
   // HTML PARSED TITLE & CONTENT
-  // const htmlTitle = parse(singlePost.title);
-  // FOLLOWING DIDN'T WORK - NEED RESEARCH
-  // const htmlContent = parse(singlePost.content.rendered);
+  const htmlTitle = parse(singlePost.title.rendered);
+  const htmlContent = parse(singlePost.content.rendered);
+  // console.log(htmlContent);
   //   FORMIK INFO
   const initialValues = {
-    id: postId,
     title: singlePost.title.rendered,
     content: singlePost.content.rendered,
   };
   const onSubmit = (values, { resetForm }) => {
+    console.log('ON SUBMIT', values);
     resetForm({ values: initialValues });
 
     const editedSinglePost = {
       ...values,
     };
     console.log('EDITED SINGLE POST:', editedSinglePost);
-    editPost(editedSinglePost);
-    // DATA ALTERED FOR LOCAL INSTANT FEEDBACK
-    const alteredSinglePost = {
-      id: editedSinglePost.id,
-      title: {
-        rendered: editedSinglePost.title,
-      },
-      content: {
-        rendered: editedSinglePost.content,
-      },
-    };
-    dispatch({
-      type: 'EDIT_POST',
-      payload: { ...alteredSinglePost },
-      // payload: { ...singlePost, ...editedSinglePost },
-    });
-    history.push('/');
+    // editPost(editedSinglePost);
+    // dispatch({ type: 'EDIT_POST', payload: editedSinglePost });
+    // history.push('/');
   };
   const validationSchema = Yup.object({
     title: Yup.string().required('Title is Required!'),

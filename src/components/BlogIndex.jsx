@@ -4,11 +4,10 @@ import { ListGroup, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Row, Col } from 'react-bootstrap';
 import { PostsContext } from '../contexts/PostsContext';
+import parse from 'html-react-parser';
 
 function BlogIndex() {
   const { state, dispatch } = useContext(PostsContext);
-
-  console.log('BlogIndex State:', state);
 
   const wp = new WPAPI({
     endpoint: 'https://digitalsupportstaff.com/wp-json',
@@ -36,17 +35,18 @@ function BlogIndex() {
           <React.Fragment key={post.id}>
             <Row className='mb-2'>
               <Col sm={10}>
+                {/* <Link to={`/post/${post.id}`}> */}
                 <Link to={`/post/${post.id}`}>
                   <ListGroup.Item action>
-                    <div
+                    {/* <div
                       dangerouslySetInnerHTML={{
                         __html: post.content.rendered,
                       }}
-                    >
-                      <span className='badge rounded-pill badge-primary p-2'>
-                        ID: {post.id}
-                      </span>
-                    </div>
+                    /> */}
+                    {post.title.rendered}
+                    <span className='badge rounded-pill badge-primary p-2 ml-5'>
+                      ID: {post.id}
+                    </span>
                   </ListGroup.Item>
                 </Link>
               </Col>

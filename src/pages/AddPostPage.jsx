@@ -3,6 +3,7 @@ import Page from '../components/layouts/Page';
 import { Row, Col } from 'react-bootstrap';
 import Content from '../components/layouts/Content';
 import PostForm from '../components/PostForm';
+import { Link } from 'react-router-dom';
 
 function AddPostPage() {
   return (
